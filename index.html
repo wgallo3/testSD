@@ -1,0 +1,223 @@
+<html><head>
+	<title>
+		ALL SAFE-JS EXAMPLES!!
+	</title>
+	<style type="text/css">
+		h1{
+			margin-bottom: 5px;
+		}
+	</style>
+	<script type="text/javascript">
+			var auth = null;
+
+			function authorize() {
+				const app =
+					{
+				    name: "DRIVE & LOW LEVEL API",
+				    id: "com.avash.will",
+				    version: "0.0.1",
+				    vendor:"avash&will",
+				    permissions: ["SAFE_DRIVE_ACCESS","LOW_LEVEL_API"]
+					};
+					var loginbtn = document.getElementById("loginbtn");
+				safeAuth.authorise(app).then(function(response){
+					auth = response;
+					loginbtn.innerHTML = 'Authorized!';
+					loginbtn.onclick = null;
+				});
+			};
+
+			function createdir(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var name = (document.getElementById('dirname').value).trim();
+				if(name==""){
+					alert('Please Enter a name');
+					return;
+				}
+				safeNFS.createDir(auth.token,name,false).then(function(response){
+					document.getElementById('dirresponse').innerHTML = 'Created Directory : '+name;
+				},function(error){
+					console.log(error);
+					document.getElementById('direrror').innerHTML = "Error on Creating Directory";
+				});
+			}
+			function getdir(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var name = (document.getElementById('dirname').value).trim();
+				if(name==""){
+					alert('Please Enter a name');
+					return;
+				}
+				safeNFS.getDir(auth.token,name).then(function(response){
+					document.getElementById('dirresponse').innerHTML = JSON.stringify(response);
+				},function(error){
+					document.getElementById('direrror').innerHTML = "Error on getting directory";
+				});
+			}
+			function createorupdatefile(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var name = (document.getElementById('filename').value).trim();
+				if(name==""){
+					alert('Please Enter a name');
+					return;
+				}
+				var content = (document.getElementById('content').value).trim();
+				safeNFS.createOrUpdateFile(auth.token,name,content).then(function(response){
+					document.getElementById('fileresponse').innerHTML = 'Created/Updated File : '+name;
+				},function(error){
+					console.log(error);
+					document.getElementById('fileerror').innerHTML = "Error on creating or updating file";
+				});
+			}
+			function getfile(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var name = (document.getElementById('filename').value).trim();
+				if(name==""){
+					alert('Please Enter a name');
+					return;
+				}
+				safeNFS.getFile(auth.token,name).then(function(response){
+					document.getElementById('fileresponse').innerHTML = JSON.stringify(response);
+				},function(error){
+					document.getElementById('fileerror').innerHTML = "Error on retiving file contents";
+				});
+			}
+			function deletefile(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var name = (document.getElementById('filename').value).trim();
+				if(name==""){
+					alert('Please Enter a name');
+					return;
+				}
+				safeNFS.deleteFile(auth.token,name).then(function(response){
+					document.getElementById('fileresponse').innerHTML = JSON.stringify(response);
+				},function(error){
+					document.getElementById('fileerror').innerHTML = "Error on deleting file";
+				});
+			}
+
+			function createlongname(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var name = (document.getElementById('longname').value).trim();
+				if(name==""){
+					alert('Please Enter a name');
+					return;
+				}
+				safeDNS.createLongName(auth.token,name).then(function(response){
+					document.getElementById('serviceresponse').innerHTML = 'Created Long Name : '+name;
+				},function(error){
+					//document.getElementById('serviceerror').innerHTML = "Error on creating long name";
+				});
+			}
+			function createservice(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var name = (document.getElementById('servicename').value).trim();
+				if(name==""){
+					alert('Please Enter a name');
+					return;
+				}
+				var longname = (document.getElementById('longname').value).trim();
+				var homedir = (document.getElementById('homedir').value).trim();
+				if(longname==""){
+					alert('Please Enter a longname');
+					return;
+				}
+				safeDNS.addService(auth.token,longname,name,homedir,false).then(function(response){
+					document.getElementById('serviceresponse').innerHTML = 'Created Service : '+name;
+				},function(error){
+					console.log(error);
+					//document.getElementById('serviceerror').innerHTML = JSON.stringify(error)+" Error on creating service";
+				});
+			}
+			function listlongnames(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				safeDNS.listLongNames(auth.token).then(function(response){
+					document.getElementById('serviceresponse').innerHTML = JSON.stringify(response);
+				},function(error){
+					document.getElementById('serviceerror').innerHTML = "Error on listing long names";
+				});
+			}
+			function listservices(){
+				if(!auth){
+					alert('Please Login First');
+					return;
+				}
+				var longname = (document.getElementById('longname').value).trim();
+				if(longname==""){
+					alert('Please Enter a longname');
+					return;
+				}
+				alert(longname);
+				safeDNS.listServices(auth.token,longname).then(function(response){
+					document.getElementById('serviceresponse').innerHTML = JSON.stringify(response);
+				},function(error){
+
+					document.getElementById('serviceerror').innerHTML = JSON.stringify(error)+" Error on listing services";
+				});
+			}
+			function getHandle() {
+				window.safeCipherOpts.getHandle(auth.token, 'SYMMETRIC')
+			}
+			function createSD() {
+        	var handle = response.payload.data.handleId
+            window.safeStructuredData.create(auth.token, 'eyJhbGciOiJIUzInniJ9.eyJpZCI6Im5RT1poRFJ2VUFLRlVZMzNiRTlnQ25VbVVJSkV0Q2lmYk4zYjE1dXZ2TlU9In0.OTKcHQ9VUKYzBXH_MqeWR4UcHFJV-xlllR68UM9l0b4', 'testdatafilledhere', handle);
+			}
+	</script>
+</head>
+<body style="padding:10px 20px">
+<h1>Auth</h1>
+<button onclick="authorize()" id="loginbtn" style="width:100px;height: auto">Login</button><br><br>
+<h1>Directory</h1>
+Directory<input id="dirname" type="text" name="dirname">
+<button onclick="createdir()">Create</button><button onclick="getdir()">Get</button><br>
+<div id="dirresponse">
+</div><br><br>
+<div id="direrror" style="color:red">
+</div>
+<h1>File</h1>
+File<input id="filename" type="text" name="filename"><button onclick="createorupdatefile()">Create or Update</button><button onclick="getfile()">Get</button><button onclick="deletefile()">delete</button><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea rows="2" id="content" placeholder="content"></textarea>
+<div id="fileresponse">
+</div><br>
+<div id="fileerror" style="color:red">
+</div>
+
+<h1>Service </h1>
+Long Name<input id="longname" type="text" name="longname"><button onclick="createlongname()">Create</button><button onclick="listlongnames()">List Long Names</button><br>
+Service Name<input id="servicename" type="text" name="servicename">
+Home Directory<input id="homedir" type="text" name="homedir">
+<button onclick="createservice()">create</button><button onclick="listservices()">List All Services</button><br>(also fill longname for which service is to be created)<br>
+
+<div id="serviceresponse">
+</div><br>
+<div id="serviceerror" style="color:red">
+</div>
+
+<h1>Structured Data</h1>
+<button onclick="getHandle()">Get a Handle</button><button onclick="createSD()">Create Structured Data!</button>
+
+</body></html>
